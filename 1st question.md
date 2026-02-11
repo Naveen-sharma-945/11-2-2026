@@ -1,3 +1,11 @@
+/**
+ * @file LinkedList.cpp
+ * @author Your Name
+ * @brief Implementation of a Singly Linked List in C++
+ * @details Features: Insertion (Start/End), Deletion, and Display using 
+ * dynamic memory management (new/delete).
+ */
+
 #include <iostream>
 
 using namespace std;
@@ -6,101 +14,117 @@ using namespace std;
 struct Node {
     int data;
     Node* next;
+
+    // Constructor to simplify node creation
+    Node(int val) : data(val), next(nullptr) {}
 };
 
-// Function to insert at the beginning
-void insertAtBeginning(Node** head, int value) {
-    Node* newNode = new Node(); // Dynamically allocate memory
-    newNode->data = value;
-    newNode->next = *head;      // Point new node to current head
-    *head = newNode;            // Update head to the new node
-    cout << "Inserted " << value << " at the beginning.\n";
-}
+class LinkedList {
+private:
+    Node* head;
 
-// Function to insert at the end
-void insertAtEnd(Node** head, int value) {
-    Node* newNode = new Node();
-    newNode->data = value;
-    newNode->next = nullptr;
+public:
+    LinkedList() : head(nullptr) {}
 
-    if (*head == nullptr) {
-        *head = newNode;
-    } else {
-        Node* temp = *head;
-        while (temp->next != nullptr) {
+    // 1. Insertion at the beginning
+    void insertAtBeginning(int value) {
+        Node* newNode = new Node(value);
+        newNode->next = head;
+        head = newNode;
+        cout << "[+] Node " << value << " inserted at the beginning." << endl;
+    }
+
+    // 2. Insertion at the end
+    void insertAtEnd(int value) {
+        Node* newNode = new Node(value);
+        if (head == nullptr) {
+            head = newNode;
+        } else {
+            Node* temp = head;
+            while (temp->next != nullptr) {
+                temp = temp->next;
+            }
+            temp->next = newNode;
+        }
+        cout << "[+] Node " << value << " inserted at the end." << endl;
+    }
+
+    // 3. Deletion of a node by value
+    void deleteNode(int key) {
+        if (head == nullptr) {
+            cout << "[!] List is empty. Deletion failed." << endl;
+            return;
+        }
+
+        Node* temp = head;
+        Node* prev = nullptr;
+
+        // If head node itself holds the key
+        if (temp != nullptr && temp->data == key) {
+            head = temp->next;
+            delete temp; 
+            cout << "[-] Node " << key << " deleted." << endl;
+            return;
+        }
+
+        // Search for the key
+        while (temp != nullptr && temp->data != key) {
+            prev = temp;
             temp = temp->next;
         }
-        temp->next = newNode;
-    }
-    cout << "Inserted " << value << " at the end.\n";
-}
 
-// Function to delete a node by value
-void deleteNode(Node** head, int key) {
-    Node* temp = *head;
-    Node* prev = nullptr;
+        // If key not found
+        if (temp == nullptr) {
+            cout << "[!] Value " << key << " not found in the list." << endl;
+            return;
+        }
 
-    // If head node itself holds the key to be deleted
-    if (temp != nullptr && temp->data == key) {
-        *head = temp->next;
-        delete temp; // Free memory
-        cout << "Node with value " << key << " deleted.\n";
-        return;
+        prev->next = temp->next;
+        delete temp;
+        cout << "[-] Node " << key << " deleted." << endl;
     }
 
-    // Search for the key to be deleted
-    while (temp != nullptr && temp->data != key) {
-        prev = temp;
-        temp = temp->next;
+    // 4. Display the list
+    void display() {
+        if (head == nullptr) {
+            cout << "List is empty." << endl;
+            return;
+        }
+        Node* temp = head;
+        cout << "Linked List: ";
+        while (temp != nullptr) {
+            cout << temp->data << " -> ";
+            temp = temp->next;
+        }
+        cout << "NULL" << endl;
     }
 
-    // If key was not present in linked list
-    if (temp == nullptr) {
-        cout << "Value " << key << " not found in the list.\n";
-        return;
+    // Destructor to prevent memory leaks on exit
+    ~LinkedList() {
+        Node* current = head;
+        while (current != nullptr) {
+            Node* next = current->next;
+            delete current;
+            current = next;
+        }
     }
-
-    // Unlink the node from linked list and delete it
-    prev->next = temp->next;
-    delete temp; 
-    cout << "Node with value " << key << " deleted.\n";
-}
-
-// Function to display the list
-void displayList(Node* node) {
-    if (node == nullptr) {
-        cout << "List is empty.\n";
-        return;
-    }
-    cout << "Current List: ";
-    while (node != nullptr) {
-        cout << node->data << " -> ";
-        node = node->next;
-    }
-    cout << "NULL\n";
-}
+};
 
 int main() {
-    Node* head = nullptr; // Initialize empty list
+    LinkedList list;
 
-    insertAtBeginning(&head, 10);
-    insertAtBeginning(&head, 20);
-    insertAtEnd(&head, 30);
-    insertAtEnd(&head, 40);
+    // Demonstrate Operations
+    list.insertAtBeginning(10);
+    list.insertAtBeginning(20);
+    list.insertAtEnd(30);
+    list.insertAtEnd(40);
+    
+    list.display();
 
-    displayList(head);
+    list.deleteNode(20); // Delete Head
+    list.deleteNode(30); // Delete Middle
 
-    deleteNode(&head, 20); // Delete head
-    deleteNode(&head, 30); // Delete middle node
-
-    displayList(head);
+    list.display();
 
     return 0;
-    
-<img width="372" height="214" alt="Screenshot 2026-02-11 095647" src="https://github.com/user-attachments/assets/b2df556c-0154-453a-8269-e8df0e5afded" />
-
-
-
-
-
 }
