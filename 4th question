@@ -1,0 +1,35 @@
+#include <iostream>
+#include <string>
+
+int main() {
+    int count;
+
+    std::cout << "Enter the number of strings: ";
+    std::cin >> count;
+    std::cin.ignore(); // Clear the newline character from the buffer
+
+    // Allocate an array of pointers to strings
+    std::string** strArray = new std::string*[count];
+
+    // Allocate each individual string and get input
+    for (int i = 0; i < count; ++i) {
+        std::cout << "Enter string " << i + 1 << " : ";
+        strArray[i] = new std::string();
+        std::getline(std::cin, *strArray[i]);
+    }
+
+    std::cout << "\nStored strings:" << std::endl;
+    for (int i = 0; i < count; ++i) {
+        std::cout << *strArray[i] << std::endl;
+    }
+
+    // Free the allocated memory for each string
+    for (int i = 0; i < count; ++i) {
+        delete strArray[i];
+    }
+
+    // Free the array of pointers
+    delete[] strArray;
+
+    return 0;
+}
